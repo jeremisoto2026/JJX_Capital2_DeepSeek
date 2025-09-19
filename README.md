@@ -12,4 +12,4 @@ Este es un proyecto de página web moderna y responsive, creada con HTML, CSS y 
 
 ## Cómo usar
 
-1. Clona este repositorio:
+1. Clona este repositorio: https://github.com/jeremisoto2026/JJX_Capital2_DeepSeek
