@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArbitrajeP2P - Registro de Operaciones</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2962ff;
+            --primary-dark: #0039cb;
+            --secondary: #0d47a1;
+            --accent: #00c853;
+            --danger: #ff1744;
+            --warning: #ffab00;
+            --dark-bg: #121826;
+            --dark-card: #1e293b;
+            --dark-text: #e2e8f0;
+            --light-bg: #f8fafc;
+            --light-card: #ffffff;
+            --light-text: #334155;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: var(--dark-bg);
+            --card-bg: var(--dark-card);
+            --text-color: var(--dark-text);
+            --border-color: #334155;
+        }
+
+        [data-theme="light"] {
+            --bg-color: var(--light-bg);
+            --card-bg: var(--light-card);
+            --text-color: var(--light-text);
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-menu a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover:after {
+            width: 100%;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #00b34d;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: #d50000;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-color);
+            margin: 2px 0;
+            transition: var(--transition);
+        }
+
+        /* Dashboard Stats */
+        .stats {
+            padding: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .positive {
+            color: var(--accent);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-title {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            transition: var(--transition);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(41, 98, 255, 0.2);
+        }
+
+        /* Operations Table */
+        .operations-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: rgba(41, 98, 255, 0.1);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(41, 98, 255, 0.05);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-sm {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.8rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .api-section, .chart-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-top: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 2rem 0 1rem;
+            margin-top: 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                background: var(--card-bg);
+                width: 100%;
+                height: calc(100vh - 70px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+                padding: 2rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li {
+                margin: 1.5rem 0;
+            }
+
+            .header-actions {
+                display: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 {
+            margin-top: 1rem;
+        }
+
+        .mt-2 {
+            margin-top: 2rem;
+        }
+
+        .mb-1 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">Arbitraje<span>P2P</span></div>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#operaciones"><i class="fas fa-exchange-alt"></i> Operaciones</a></li>
+                <li><a href="#estadisticas"><i class="fas fa-chart-bar"></i> Estadísticas</a></li>
+                <li><a href="#configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+            </ul>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="btn btn-outline" id="exportBtn"><i class="fas fa-download"></i> Exportar</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats Section -->
+        <section class="stats">
+            <div class="stats-grid">
+                <div class="stat-card fade-in">
+                    <div class="stat-number">$2,548.75</div>
+                    <div class="stat-label">Ganancias Totales</div>
+                </div>
+                <div class="stat-card fade-in delay-1">
+                    <div class="stat-number">142</div>
+                    <div class="stat-label">Operaciones Realizadas</div>
+                </div>
+                <div class="stat-card fade-in delay-2">
+                    <div class="stat-number positive">+8.5%</div>
+                    <div class="stat-label">Rendimiento Mensual</div>
+                </div>
+                <div class="stat-card fade-in delay-3">
+                    <div class="stat-number">$1,250.40</div>
+                    <div class="stat-label">Ganancias del Mes</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Add Operation Form -->
+                <section class="form-section" id="operationForm">
+                    <h2 class="form-title"><i class="fas fa-plus-circle"></i> Registrar Operación</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="operationDate">Fecha</label>
+                            <input type="datetime-local" id="operationDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="operationType">Tipo de Operación</label>
+                            <select id="operationType" class="form-control" required>
+                                <option value="compra">Compra</option>
+                                <option value="venta">Venta</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cryptoAsset">Activo</label>
+                            <select id="cryptoAsset" class="form-control" required>
+                                <option value="BTC">Bitcoin (BTC)</option>
+                                <option value="ETH">Ethereum (ETH)</option>
+                                <option value="USDT">Tether (USDT)</option>
+                                <option value="BNB">Binance Coin (BNB)</option>
+                                <option value="SOL">Solana (SOL)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Cantidad</label>
+                            <input type="number" id="amount" class="form-control" step="0.000001" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Precio por Unidad</label>
+                            <input type="number" id="price" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="total">Total</label>
+                            <input type="number" id="total" class="form-control" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="platform">Plataforma</label>
+                            <select id="platform" class="form-control" required>
+                                <option value="binance">Binance</option>
+                                <option value="kucoin">KuCoin</option>
+                                <option value="bybit">Bybit</option>
+                                <option value="huobi">Huobi</option>
+                                <option value="otra">Otra</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="orderId">ID de Orden (opcional)</label>
+                            <input type="text" id="orderId" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="notes">Notas</label>
+                        <textarea id="notes" class="form-control" rows="2"></textarea>
+                    </div>
+                    <button class="btn btn-accent mt-1" id="saveOperation"><i class="fas fa-save"></i> Guardar Operación</button>
+                    <button class="btn btn-outline mt-1" id="connectBinance"><i class="fas fa-plug"></i> Conectar con Binance</button>
+                </section>
+
+                <!-- Operations Table -->
+                <section class="operations-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-list"></i> Historial de Operaciones</h2>
+                        <div class="filters">
+                            <select id="filterMonth" class="form-control">
+                                <option value="">Todos los meses</option>
+                                <option value="1">Enero</option>
+                                <option value="2">Febrero</option>
+                                <option value="3">Marzo</option>
+                                <option value="4">Abril</option>
+                                <option value="5">Mayo</option>
+                                <option value="6">Junio</option>
+                                <option value="7">Julio</option>
+                                <option value="8">Agosto</option>
+                                <option value="9">Septiembre</option>
+                                <option value="10">Octubre</option>
+                                <option value="11">Noviembre</option>
+                                <option value="12">Diciembre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Operación</th>
+                                    <th>Activo</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Total</th>
+                                    <th>Plataforma</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="operationsTableBody">
+                                <!-- Operations will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column / Sidebar -->
+            <div class="sidebar">
+                <!-- API Configuration -->
+                <section class="api-section">
+                    <h2 class="section-title"><i class="fas fa-key"></i> API de Binance</h2>
+                    <div class="form-group">
+                        <label for="apiKey">API Key</label>
+                        <input type="password" id="apiKey" class="form-control" placeholder="Ingresa tu API Key">
+                    </div>
+                    <div class="form-group">
+                        <label for="apiSecret">API Secret</label>
+                        <input type="password" id="apiSecret" class="form-control" placeholder="Ingresa tu API Secret">
+                    </div>
+                    <button class="btn btn-outline" id="saveApiKeys"><i class="fas fa-save"></i> Guardar Claves</button>
+                    <button class="btn btn-accent mt-1" id="syncOperations"><i class="fas fa-sync"></i> Sincronizar Órdenes</button>
+                </section>
+
+                <!-- Performance Chart -->
+                <section class="chart-section">
+                    <h2 class="section-title"><i class="fas fa-chart-line"></i> Rendimiento Mensual</h2>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Quick Stats -->
+                <section class="api-section">
+                    <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Resumen Rápido</h2>
+                    <div class="form-group">
+                        <label>Operaciones del Mes</label>
+                        <div class="stat-number">24</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ganancias del Mes</label>
+                        <div class="stat-number">$1,250.40</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Activo Más Operado</label>
+                        <div class="stat-number">USDT</div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>ArbitrajeP2P</h3>
+                    <p>Plataforma especializada en el registro y análisis de operaciones de arbitraje P2P.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#operaciones">Operaciones</a></li>
+                        <li><a href="#estadisticas">Estadísticas</a></li>
+                        <li><a href="#configuracion">Configuración</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Soporte</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#">Tutoriales</a></li>
+                        <li><a href="#">Contacto</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 ArbitrajeP2P. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Export Modal -->
+    <div class="modal" id="exportModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Exportar Datos</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label>Formato de Exportación</label>
+                <select id="exportFormat" class="form-control">
+                    <option value="csv">CSV (Excel)</option>
+                    <option value="json">JSON</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Rango de Fechas</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="date" id="exportStartDate" class="form-control">
+                    <input type="date" id="exportEndDate" class="form-control">
+                </div>
+            </div>
+            <button class="btn btn-accent" id="confirmExport">Exportar</button>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para las operaciones
+        const sampleOperations = [
+            {
+                id: 1,
+                date: '2023-10-15T14:30',
+                type: 'compra',
+                asset: 'USDT',
+                amount: 500,
+                price: 1.01,
+                total: 505,
+                platform: 'binance',
+                orderId: 'BINS123456',
+                notes: 'Compra P2P en Binance'
+            },
+            {
+                id: 2,
+                date: '2023-10-16T10:15',
+                type: 'venta',
+                asset: 'USDT',
+                amount: 500,
+                price: 1.03,
+                total: 515,
+                platform: 'binance',
+                orderId: 'BINS789012',
+                notes: 'Venta P2P en Binance'
+            },
+            {
+                id: 3,
+                date: '2023-10-17T16:45',
+                type: 'compra',
+                asset: 'BTC',
+                amount: 0.05,
+                price: 28500,
+                total: 1425,
+                platform: 'binance',
+                orderId: 'BINS345678',
+                notes: 'Compra de BTC'
+            }
+        ];
+
+        // Almacenamiento local para las operaciones
+        let operations = JSON.parse(localStorage.getItem('p2pOperations')) || sampleOperations;
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            renderOperations();
+            initCharts();
+            setupEventListeners();
+            calculateTotals();
+        });
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Toggle del menú móvil
+            document.getElementById('menuToggle').addEventListener('click', toggleMobileMenu);
+            
+            // Toggle del tema
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            
+            // Guardar operación
+            document.getElementById('saveOperation').addEventListener('click', saveOperation);
+            
+            // Calcular total automáticamente
+            document.getElementById('amount').addEventListener('input', calculateTotal);
+            document.getElementById('price').addEventListener('input', calculateTotal);
+            
+            // Exportar datos
+            document.getElementById('exportBtn').addEventListener('click', openExportModal);
+            document.querySelector('.close-modal').addEventListener('click', closeExportModal);
+            document.getElementById('confirmExport').addEventListener('click', exportData);
+            
+            // Conectar con Binance
+            document.getElementById('connectBinance').addEventListener('click', connectBinance);
+            document.getElementById('saveApiKeys').addEventListener('click', saveApiKeys);
+            document.getElementById('syncOperations').addEventListener('click', syncOperations);
+            
+            // Filtrar operaciones por mes
+            document.getElementById('filterMonth').addEventListener('change', filterOperationsByMonth);
+        }
+
+        // Inicializar el tema
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        // Alternar tema claro/oscuro
+        function toggleTheme() {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        // Actualizar icono del tema
+        function updateThemeIcon(theme) {
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+
+        // Alternar menú móvil
+        function toggleMobileMenu() {
+            document.getElementById('navMenu').classList.toggle('active');
+            document.getElementById('menuToggle').classList.toggle('active');
+        }
+
+        // Calcular el total de la operación
+        function calculateTotal() {
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const price = parseFloat(document.getElementById('price').value) || 0;
+            document.getElementById('total').value = (amount * price).toFixed(2);
+        }
+
+        // Guardar una nueva operación
+        function saveOperation() {
+            const operation = {
+                id: Date.now(),
+                date: document.getElementById('operationDate').value,
+                type: document.getElementById('operationType').value,
+                asset: document.getElementById('cryptoAsset').value,
+                amount: parseFloat(document.getElementById('amount').value),
+                price: parseFloat(document.getElementById('price').value),
+                total: parseFloat(document.getElementById('total').value),
+                platform: document.getElementById('platform').value,
+                orderId: document.getElementById('orderId').value,
+                notes: document.getElementById('notes').value
+            };
+
+            // Validación básica
+            if (!operation.date || isNaN(operation.amount) || isNaN(operation.price)) {
+                alert('Por favor, complete todos los campos obligatorios.');
+                return;
+            }
+
+            operations.push(operation);
+            localStorage.setItem('p2pOperations', JSON.stringify(operations));
+            
+            renderOperations();
+            calculateTotals();
+            resetForm();
+            
+            alert('Operación guardada correctamente.');
+        }
+
+        // Renderizar la tabla de operaciones
+        function renderOperations() {
+            const tableBody = document.getElementById('operationsTableBody');
+            tableBody.innerHTML = '';
+
+            const filteredOperations = filterOperationsByMonth();
+
+            filteredOperations.forEach(op => {
+                const row = document.createElement('tr');
+                
+                const date = new Date(op.date);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td><span class="${op.type === 'compra' ? 'positive' : 'negative'}">${op.type === 'compra' ? 'Compra' : 'Venta'}</span></td>
+                    <td>${op.asset}</td>
+                    <td>${op.amount}</td>
+                    <td>$${op.price.toFixed(2)}</td>
+                    <td>$${op.total.toFixed(2)}</td>
+                    <td>${op.platform}</td>
+                    <td class="action-buttons">
+                        <button class="btn btn-outline btn-sm" onclick="editOperation(${op.id})"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteOperation(${op.id})"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Filtrar operaciones por mes
+        function filterOperationsByMonth() {
+            const monthFilter = document.getElementById('filterMonth').value;
+            
+            if (!monthFilter) {
+                return operations;
+            }
+            
+            return operations.filter(op => {
+                const date = new Date(op.date);
+                return (date.getMonth() + 1) === parseInt(monthFilter);
+            });
+        }
+
+        // Calcular totales y estadísticas
+        function calculateTotals() {
+            // Calcular ganancias totales (suponiendo que las ventas son con ganancia)
+            const totalProfit = operations
+                .filter(op => op.type === 'venta')
+                .reduce((sum, op) => sum + (op.total - (op.amount * op.price * 0.99)), 0);
+                
+            // Actualizar UI con los totales
+            document.querySelectorAll('.stat-number')[0].textContent = `$${totalProfit.toFixed(2)}`;
+            document.querySelectorAll('.stat-number')[1].textContent = operations.length;
+        }
+
+        // Resetear el formulario
+        function resetForm() {
+            document.getElementById('operationForm').reset();
+            document.getElementById('total').value = '';
+        }
+
+        // Conectar con Binance
+        function connectBinance() {
+            alert('Función de conexión con Binance. En una implementación real, esto conectaría con la API de Binance.');
+        }
+
+        // Guardar claves API
+        function saveApiKeys() {
+            const apiKey = document.getElementById('apiKey').value;
+            const apiSecret = document.getElementById('apiSecret').value;
+            
+            if (apiKey && apiSecret) {
+                localStorage.setItem('binanceApiKey', apiKey);
+                localStorage.setItem('binanceApiSecret', apiSecret);
+                alert('Claves API guardadas correctamente.');
+            } else {
+                alert('Por favor, ingrese ambas claves API.');
+            }
+        }
+
+        // Sincronizar operaciones con Binance
+        function syncOperations() {
+            alert('Sincronizando operaciones con Binance. En una implementación real, esto recuperaría las órdenes de la API.');
+        }
+
+        // Abrir modal de exportación
+        function openExportModal() {
+            document.getElementById('exportModal').style.display = 'flex';
+        }
+
+        // Cerrar modal de exportación
+        function closeExportModal() {
+            document.getElementById('exportModal').style.display = 'none';
+        }
+
+        // Exportar datos
+        function exportData() {
+            const format = document.getElementById('exportFormat').value;
+            alert(`Exportando datos en formato ${format.toUpperCase()}. En una implementación real, se generarían los archivos para descargar.`);
+            closeExportModal();
+        }
+
+        // Editar operación
+        function editOperation(id) {
+            const operation = operations.find(op => op.id === id);
+            if (operation) {
+                // Llenar el formulario con los datos de la operación
+                document.getElementById('operationDate').value = operation.date;
+                document.getElementById('operationType').value = operation.type;
+                document.getElementById('cryptoAsset').value = operation.asset;
+                document.getElementById('amount').value = operation.amount;
+                document.getElementById('price').value = operation.price;
+                document.getElementById('total').value = operation.total;
+                document.getElementById('platform').value = operation.platform;
+                document.getElementById('orderId').value = operation.orderId;
+                document.getElementById('notes').value = operation.notes;
+                
+                // Eliminar la operación actual para reemplazarla después
+                deleteOperation(id, false);
+                
+                alert('Modifique los datos y guarde para actualizar la operación.');
+            }
+        }
+
+        // Eliminar operación
+        function deleteOperation(id, confirm = true) {
+            if (confirm && !confirm('¿Está seguro de que desea eliminar esta operación?')) {
+                return;
+            }
+            
+            operations = operations.filter(op => op.id !== id);
+            localStorage.setItem('p2pOperations', JSON.stringify(operations));
+            renderOperations();
+            calculateTotals();
+        }
+
+        // Inicializar gráficos
+        function initCharts() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            
+            // Datos de ejemplo para el gráfico
+            const monthlyData = {
+                'Enero': 850,
+                'Febrero': 920,
+                'Marzo': 1100,
+                'Abril': 980,
+                'Mayo': 1250,
+                'Junio': 1420,
+                'Julio': 1380,
+                'Agosto': 1520,
+                'Septiembre': 1680,
+                'Octubre': 1250,
+                'Noviembre': 0,
+                'Diciembre': 0
+            };
+            
+            const currentMonth = new Date().getMonth();
+            const months = Object.keys(monthlyData).slice(0, currentMonth + 1);
+            const profits = Object.values(monthlyData).slice(0, currentMonth + 1);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Ganancias Mensuales ($)',
+                        data: profits,
+                        backgroundColor: '#2962ff',
+                        borderColor: '#0039cb',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
