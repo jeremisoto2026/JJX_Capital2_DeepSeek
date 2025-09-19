@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JJX Capital - Plataforma de Trading Avanzada</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2962ff;
+            --secondary: #0d47a1;
+            --accent: #00c853;
+            --danger: #ff1744;
+            --warning: #ffab00;
+            --dark-bg: #121826;
+            --dark-card: #1e293b;
+            --dark-text: #e2e8f0;
+            --light-bg: #f8fafc;
+            --light-card: #ffffff;
+            --light-text: #334155;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --transition: all 0.3s ease;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: var(--dark-bg);
+            --card-bg: var(--dark-card);
+            --text-color: var(--dark-text);
+            --border-color: #334155;
+        }
+
+        [data-theme="light"] {
+            --bg-color: var(--light-bg);
+            --card-bg: var(--light-card);
+            --text-color: var(--light-text);
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-menu a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-menu a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-menu a:hover:after {
+            width: 100%;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #00b34d;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-color);
+            margin: 2px 0;
+            transition: var(--transition);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--card-bg), var(--bg-color));
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 3rem 0;
+            background-color: var(--card-bg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Crypto Cards */
+        .crypto-section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .section-title p {
+            color: var(--text-color);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .crypto-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .crypto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .crypto-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .crypto-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .crypto-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-color);
+        }
+
+        .crypto-symbol {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .crypto-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .price-change {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .price-change.positive {
+            background-color: rgba(0, 200, 83, 0.15);
+            color: var(--accent);
+        }
+
+        .price-change.negative {
+            background-color: rgba(255, 23, 68, 0.15);
+            color: var(--danger);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+            background-color: var(--bg-color);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        /* Trading View */
+        .trading-section {
+            padding: 5rem 0;
+            background-color: var(--card-bg);
+        }
+
+        .trading-widget {
+            background: var(--bg-color);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .trading-widget-placeholder {
+            text-align: center;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .trading-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: flex;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                background: var(--card-bg);
+                width: 100%;
+                height: calc(100vh - 70px);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: var(--transition);
+                padding: 2rem 0;
+                border-top: 1px solid var(--border-color);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .nav-menu li {
+                margin: 1.5rem 0;
+            }
+
+            .header-actions {
+                display: none;
+            }
+
+            .mobile-actions {
+                display: flex;
+                gap: 1rem;
+                margin-top: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .trading-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .trading-actions .btn {
+                width: 100%;
+                max-width: 300px;
+                text-align: center;
+            }
+        }
+
+        /* Mobile Actions */
+        .mobile-actions {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-2 {
+            animation-delay: 0.4s;
+        }
+
+        .delay-3 {
+            animation-delay: 0.6s;
+        }
+
+        /* Loading Animation */
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">JJX<span>Capital</span></div>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#mercado">Mercado</a></li>
+                <li><a href="#trading">Trading</a></li>
+                <li><a href="#caracteristicas">Características</a></li>
+                <li><a href="#acerca">Acerca de</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="#login" class="btn btn-outline">Iniciar Sesión</a>
+                <a href="#register" class="btn">Registrarse</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h1 class="fade-in">Trading Institucional para Todos</h1>
+            <p class="fade-in delay-1">Accede a herramientas profesionales de trading con interfaz intuitiva y comisiones competitivas.</p>
+            <div class="fade-in delay-2">
+                <a href="#register" class="btn btn-accent">Abrir Cuenta</a>
+                <a href="#demo" class="btn btn-outline" style="margin-left: 1rem;">Ver Plataforma</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card fade-in">
+                    <div class="stat-number">$2.1B+</div>
+                    <div class="stat-label">Volumen Mensual</div>
+                </div>
+                <div class="stat-card fade-in delay-1">
+                    <div class="stat-number">250K+</div>
+                    <div class="stat-label">Usuarios Activos</div>
+                </div>
+                <div class="stat-card fade-in delay-2">
+                    <div class="stat-number">98.7%</div>
+                    <div class="stat-label">Uptime Plataforma</div>
+                </div>
+                <div class="stat-card fade-in delay-3">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Soporte Premium</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Crypto Cards Section -->
+    <section class="crypto-section" id="mercado">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Mercado en Tiempo Real</h2>
+                <p>Sigue los precios de los principales activos digitales</p>
+            </div>
+            <div class="crypto-grid">
+                <div class="crypto-card fade-in">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">B</div>
+                        <div>
+                            <div class="crypto-name">Bitcoin</div>
+                            <div class="crypto-symbol">BTC/USD</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$42,567.89</div>
+                    <div class="price-change positive">+2.45%</div>
+                </div>
+                <div class="crypto-card fade-in delay-1">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">E</div>
+                        <div>
+                            <div class="crypto-name">Ethereum</div>
+                            <div class="crypto-symbol">ETH/USD</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$2,345.67</div>
+                    <div class="price-change positive">+1.23%</div>
+                </div>
+                <div class="crypto-card fade-in delay-2">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">S</div>
+                        <div>
+                            <div class="crypto-name">Solana</div>
+                            <div class="crypto-symbol">SOL/USD</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$98.76</div>
+                    <div class="price-change negative">-0.87%</div>
+                </div>
+                <div class="crypto-card fade-in delay-3">
+                    <div class="crypto-header">
+                        <div class="crypto-icon">X</div>
+                        <div>
+                            <div class="crypto-name">XRP</div>
+                            <div class="crypto-symbol">XRP/USD</div>
+                        </div>
+                    </div>
+                    <div class="crypto-price">$0.5678</div>
+                    <div class="price-change positive">+0.34%</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="caracteristicas">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Características de la Plataforma</h2>
+                <p>Todo lo que necesitas para operar con éxito en los mercados digitales</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                    <h3>Análisis Técnico Avanzado</h3>
+                    <p>Más de 100 indicadores técnicos y herramientas de drawing para análisis profesional.</p>
+                </div>
+                <div class="feature-card fade-in delay-1">
+                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                    <h3>Ejecución de Alta Velocidad</h3>
+                    <p>Órdenes ejecutadas en menos de 0.1 segundos con tecnología de matching engine avanzada.</p>
+                </div>
+                <div class="feature-card fade-in delay-2">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Seguridad Institucional</h3>
+                    <p>95% de los fondos en cold storage multisig y seguros de custodia.</p>
+                </div>
+                <div class="feature-card fade-in delay-3">
+                    <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <h3>App Móvil Nativa</h3>
+                    <p>Trading desde cualquier lugar con nuestra aplicación iOS y Android nativa.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon"><i class="fas fa-book"></i></div>
+                    <h3>Order Books Profundos</h3>
+                    <p>Acceso a liquidez institucional con order books profundos y spread ajustados.</p>
+                </div>
+                <div class="feature-card fade-in delay-1">
+                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>Academia de Trading</h3>
+                    <p>Cursos profesionales y webinars diarios con traders expertos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trading View Section -->
+    <section class="trading-section" id="trading">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Plataforma de Trading Avanzada</h2>
+                <p>Interfaz profesional con todas las herramientas que necesitas</p>
+            </div>
+            <div class="trading-widget">
+                <div class="trading-widget-placeholder">
+                    <i class="fas fa-chart-bar" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <h3>Interfaz de Trading Profesional</h3>
+                    <p>Charts avanzados, order book en tiempo real, y herramientas de análisis técnico</p>
+                </div>
+            </div>
+            <div class="trading-actions">
+                <a href="#demo" class="btn btn-accent">Probar Demo</a>
+                <a href="#download" class="btn btn-outline">Descargar Plataforma</a>
+                <a href="#web-version" class="btn btn-outline">Versión Web</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>JJX Capital</h3>
+                    <p>Plataforma de trading profesional con herramientas institucionales para traders de todos los niveles.</p>
+                    <div class="social-links" style="margin-top: 1rem;">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Mercados</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Criptomonedas</a></li>
+                        <li><a href="#">Forex</a></li>
+                        <li><a href="#">Índices</a></li>
+                        <li><a href="#">Materias Primas</a></li>
+                        <li><a href="#">Acciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Recursos</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Academia de Trading</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Guías</a></li>
+                        <li><a href="#">Webinars</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Soporte</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#">Contactar Soporte</a></li>
+                        <li><a href="#">Estado del Sistema</a></li>
+                        <li><a href="#">Fees</a></li>
+                        <li><a href="#">Políticas de Seguridad</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 JJX Capital. Todos los derechos reservados. | <a href="#" style="color: #aaa;">Términos de Servicio</a> | <a href="#" style="color: #aaa;">Política de Privacidad</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Menu toggle functionality
+        const menuToggle = document.getElementById('menuToggle');
+        const navMenu = document.getElementById('navMenu');
+        
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+            });
+        });
+
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const themeIcon = themeToggle.querySelector('i');
+        
+        // Check for saved theme preference or respect OS preference
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            body.setAttribute('data-theme', 'dark');
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+        } else {
+            body.setAttribute('data-theme', 'light');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'dark') {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        });
+
+        // Crypto price simulation
+        function simulatePriceChanges() {
+            const priceChanges = document.querySelectorAll('.price-change');
+            const prices = document.querySelectorAll('.crypto-price');
+            
+            prices.forEach(priceElement => {
+                const currentPrice = parseFloat(priceElement.textContent.replace('$', '').replace(',', ''));
+                const changePercent = (Math.random() * 0.5) - 0.25; // Random change between -0.25% and +0.25%
+                const newPrice = currentPrice * (1 + changePercent / 100);
+                
+                priceElement.textContent = '$' + newPrice.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            });
+            
+            priceChanges.forEach(change => {
+                const isPositive = change.classList.contains('positive');
+                const currentChange = parseFloat(change.textContent.replace('+', '').replace('-', '').replace('%', ''));
+                const newChange = (currentChange + (Math.random() * 0.2 - 0.1)).toFixed(2);
+                
+                if (parseFloat(newChange) >= 0) {
+                    change.textContent = `+${newChange}%`;
+                    change.className = 'price-change positive';
+                } else {
+                    change.textContent = `${newChange}%`;
+                    change.className = 'price-change negative';
+                }
+            });
+        }
+        
+        // Update prices every 10 seconds
+        setInterval(simulatePriceChanges, 10000);
+
+        // Scroll animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const fadeElems = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = 1;
+                            entry.target.style.transform = 'translateY(0)';
+                        }, 100);
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            fadeElems.forEach(elem => {
+                elem.style.opacity = 0;
+                elem.style.transform = 'translateY(20px)';
+                elem.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(elem);
+            });
+        });
+
+        // Mobile actions for small screens
+        function checkMobile() {
+            if (window.innerWidth <= 768) {
+                document.querySelector('.header-actions').style.display = 'none';
+                document.querySelector('.mobile-actions').style.display = 'flex';
+            } else {
+                document.querySelector('.header-actions').style.display = 'flex';
+                document.querySelector('.mobile-actions').style.display = 'none';
+            }
+        }
+        
+        window.addEventListener('resize', checkMobile);
+        checkMobile();
+    </script>
+</body>
+</html>
